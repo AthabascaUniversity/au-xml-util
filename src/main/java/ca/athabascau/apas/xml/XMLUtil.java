@@ -1,6 +1,5 @@
 package ca.athabascau.apas.xml;
 
-import ca.athabascau.apas.xml.ExceptionErrorListener;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +32,29 @@ public class XMLUtil
     private static final Logger logger = Logger.getLogger(XMLUtil.class);
 
     static final int BUFFER_CAPACITY = 50000;
-    
+
+    public static void main(final String[] args)
+        throws TransformerException, ParserConfigurationException
+    {
+        final Map parameters;
+        final Map subElements;
+        final Map innerElements;
+        parameters = new HashMap();
+        subElements = new HashMap();
+        innerElements = new HashMap();
+
+        parameters.put("element1", "value1");
+        parameters.put("element2", "value2");
+        parameters.put("element3", "value3");
+        parameters.put("element4", subElements);
+        subElements.put("subelement1", "value1");
+        subElements.put("subelement2", "value2");
+        subElements.put("innermost", innerElements);
+        innerElements.put("innerelement1", "innervalue1");
+        innerElements.put("innerelement2", "innervalue2");
+        System.out.println(XMLUtil.mapToXML("root", parameters));
+    }
+
     /**
      * Example for retrieving the APAS institutions list
      *
@@ -331,47 +352,113 @@ public class XMLUtil
     }
 
     /**
-     * Converts a map to XML, where rootElementName is the root element, and
-     * every other element is of the form <key>value</key>.
+     * Converts a map to XML, where parent is the parent element, and every
+     * other element is of the form <key>value</key>.
      * <p/>
      * We assume that every key is an actual XML compatible element name.  The
      * values will be XML encoded automatically.
      *
-     * @param rootElementName the name of the root element
-     * @param parameters      the map to process
-     *
-     * @return the XML result.
+     * @param parameters    the map to process
+     * @param parentElement the parent element to append the new child to
+     * @param document      the XML document to create new elements in
      *
      * @throws ParserConfigurationException if a configuration error occurs
-     * @throws TransformerException         if an XML transformation error
+     */
+    public static void mapToNode(
+        final Map parameters, final Element parentElement,
+        final Document document)
+        throws ParserConfigurationException
+    {
+        final Iterator it = parameters.keySet().iterator();
+        Element tmp;
+
+        while (it.hasNext())
+        {
+            final String key = (String) it.next();
+            final Object value;
+
+            value = parameters.get(key);
+            if (value instanceof Map)
+            {
+                tmp = document.createElement(key);
+                mapToNode((Map) value, tmp, document);
+                parentElement.appendChild(tmp);
+            }
+            else
+            {
+                tmp = document.createElement(key);
+                if (value != null)
+                {   // null elements don't get in
+                    tmp.appendChild(document.createTextNode((String) value));
+                    parentElement.appendChild(tmp);
+                }
+            }
+        }
+    }
+
+    /**
+     * Converts a Map's keys and values to an XML document where the keys are
+     * the elments, and the values are the textnodes (where value is String) or
+     * subelements (where value is Map)
+     * <p/>
+     * The following code, will produce the XML below it.
+     * <pre>
+     * final Map parameters;
+     * final Map subElements;
+     * final Map innerElements;
+     * parameters = new HashMap();
+     * subElements = new HashMap();
+     * innerElements = new HashMap();
+     * parameters.put("element1", "value1");
+     * parameters.put("element2", "value2");
+     * parameters.put("element3", "value3");
+     * parameters.put("element4", subElements);
+     * subElements.put("subelement1", "value1");
+     * subElements.put("subelement2", "value2");
+     * subElements.put("innermost", innerElements);
+     * innerElements.put("innerelement1", "innervalue1");
+     * innerElements.put("innerelement2", "innervalue2");
+     * System.out.println(XMLUtil.mapToXML("root", parameters));
+     * </pre>
+     * <pre>
+     * &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+     * &lt;root&gt;
+     *   &lt;element4&gt;
+     *     &lt;subelement2&gt;value2&lt;/subelement2&gt;
+     *     &lt;subelement1&gt;value1&lt;/subelement1&gt;
+     *     &lt;innermost&gt;
+     *       &lt;innerelement1&gt;innervalue1&lt;/innerelement1&gt;
+     *       &lt;innerelement2&gt;innervalue2&lt;/innerelement2&gt;
+     *     &lt;/innermost&gt;
+     *   &lt;/element4&gt;
+     *   &lt;element2&gt;value2&lt;/element2&gt;
+     *   &lt;element3&gt;value3&lt;/element3&gt;
+     *   &lt;element1&gt;value1&lt;/element1&gt;
+     * &lt;/root&gt;
+     * </pre>
+     *
+     * @param rootElementName the name that you want the root element to have
+     * @param parameters      the parameters to become the XML document
+     *
+     * @return the string representation of the XML document
+     *
+     * @throws TransformerException         if an XSL transformation exception
+     *                                      occurs
+     * @throws ParserConfigurationException if a JAXP configuration error
      *                                      occurs
      */
     public static String mapToXML(final String rootElementName,
         final Map parameters)
-        throws ParserConfigurationException, TransformerException
+        throws TransformerException, ParserConfigurationException
     {
-        final Iterator it = parameters.keySet().iterator();
         final Document mapDoc;
-        final Element root;
-        Element tmp;
+        final Element parent;
 
         mapDoc = createDocument();
-        root = mapDoc.createElement(rootElementName);
-        mapDoc.appendChild(root);
-        while (it.hasNext())
-        {
-            final String key = (String) it.next();
-            final String value;
+        parent = mapDoc.createElement(rootElementName);
+        mapDoc.appendChild(parent);
 
-            value = (String) parameters.get(key);
-            tmp = mapDoc.createElement(key);
-            if (value != null)
-            {   // null elements don't get in
-                tmp.appendChild(mapDoc.createTextNode(value));
-                root.appendChild(tmp);
-            }
-        }
-
+        mapToNode(parameters, parent, mapDoc);
         return documentToString(mapDoc);
     }
 }
