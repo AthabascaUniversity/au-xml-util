@@ -24,6 +24,9 @@
       <version>1.2.14</version>
     </dependency>
   </dependencies>
+  <properties>
+    <webunit-cvs.user.name>${user.name}</webunit-cvs.user.name>
+  </properties>
 
   <build>
     <plugins>
@@ -66,8 +69,22 @@
     </plugins>
   </build>
 
+  <distributionManagement>
+    <!-- AU Repository Distribution -->
+    <repository>
+      <id>athabascau-repository</id>
+      <name>AU Repository</name>
+      <url>scpexe://maven.cs.athabascau.ca/var/lib/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>athabascau-repository-snap</id>
+      <name>AU Repository</name>
+      <url>scpexe://reuben.pc.athabascau.ca/var/lib/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <scm>
-    <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.0</connection>
-    <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.0</developerConnection>
+    <connection>scm:svn:svn+ssh://trenta@webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.0</connection>
+    <developerConnection>scm:svn:svn+ssh://trenta@webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.0</developerConnection>
   </scm>
 </project>
