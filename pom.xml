@@ -39,4 +39,9 @@
       </plugin>
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util</connection>
+    <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util</developerConnection>
+  </scm>
 </project>
