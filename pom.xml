@@ -68,6 +68,20 @@
     </plugins>
   </build>
 
+  <distributionManagement>
+    <!-- AU Repository Distribution -->
+    <repository>
+      <id>athabascau-repository</id>
+      <name>AU Repository</name>
+      <url>scpexe://maven.cs.athabascau.ca/var/lib/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>athabascau-repository-snap</id>
+      <name>AU Repository</name>
+      <url>scpexe://reuben.pc.athabascau.ca/var/lib/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <scm>
     <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util</connection>
     <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util</developerConnection>
