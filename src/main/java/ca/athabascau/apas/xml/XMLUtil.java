@@ -13,6 +13,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -262,6 +263,30 @@ public class XMLUtil
     public static String xsDateFormatNow()
     {
         return xsDateFormat(Calendar.getInstance());
+    }
+
+    /**
+     * Converts an XML xs:date string to a Calendar object.  We do not mess
+     * around with formatting issues.  It either works, or it doesn't.
+     *
+     * @param xsDate the xs:date formatted string
+     *
+     * @return the Calendar object
+     *
+     * @throws ParseException if a parsing error occurs
+     */
+    public static Calendar xsDateToCalendar(final String xsDate) throws
+        ParseException
+    {
+        Calendar newCal = null;
+        if (xsDate != null)
+        {
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            final Date date = dateFormat.parse(xsDate);
+            newCal = Calendar.getInstance();
+            newCal.setTime(date);
+        }
+        return newCal;
     }
 
     /**
