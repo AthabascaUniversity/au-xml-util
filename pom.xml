@@ -3,7 +3,7 @@
   <groupId>ca.athabascau.apas.xml</groupId>
   <artifactId>xml-util</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.1.2</version>
   <name>xml-util</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -24,9 +24,6 @@
       <version>1.2.14</version>
     </dependency>
   </dependencies>
-  <properties>
-    <webunit-cvs.user.name>${user.name}</webunit-cvs.user.name>
-  </properties>
 
   <build>
     <plugins>
@@ -69,7 +66,11 @@
     </plugins>
   </build>
 
-  <distributionManagement>
+  <properties>
+    <webunit-cvs.user.name>${user.name}</webunit-cvs.user.name>
+  </properties>
+ 
+ <distributionManagement>
     <!-- AU Repository Distribution -->
     <repository>
       <id>athabascau-repository</id>
@@ -84,7 +85,7 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:svn+ssh://trenta@webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util</connection>
-    <developerConnection>scm:svn:svn+ssh://trenta@webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util</developerConnection>
+    <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.2</connection>
+    <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.2</developerConnection>
   </scm>
 </project>
