@@ -3,6 +3,8 @@ package ca.athabascau.apas.xml;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -71,7 +73,7 @@ public class XMLUtil
     public static Document stringToDocument(final String xml)
         throws SAXException, IOException, ParserConfigurationException
     {
-        return loadXMLFrom(new ByteArrayInputStream(xml.getBytes()));
+        return loadXMLFrom(new InputSource(new StringReader(xml)));
     }
 
     /**
@@ -97,6 +99,19 @@ public class XMLUtil
         assert builder != null;
         final Document doc = builder.parse(is);
         is.close();
+        return doc;
+    }
+
+    public static Document loadXMLFrom(final InputSource is)
+        throws ParserConfigurationException, IOException, SAXException
+    {
+        final DocumentBuilderFactory factory =
+            DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = null;
+        builder = factory.newDocumentBuilder();
+        assert builder != null;
+        final Document doc = builder.parse(is);
         return doc;
     }
 
@@ -128,7 +143,7 @@ public class XMLUtil
         SAXException
     {   // BEGIN xslTransformation()
         // create an instance of TransformerFactory
-        final ByteArrayOutputStream byteArray;
+        final StringWriter stringWriter;
         final Result result;
         final TransformerFactory transFact;
         final Transformer trans;
@@ -137,16 +152,22 @@ public class XMLUtil
         final ExceptionErrorListener errorListener;
 
         errorListener = new ExceptionErrorListener();
-        byteArray = new ByteArrayOutputStream(BUFFER_CAPACITY);
-        result = new StreamResult(byteArray);
+        stringWriter = new StringWriter(BUFFER_CAPACITY);
+        result = new StreamResult(stringWriter);
         transFact = TransformerFactory.newInstance();
         transFact.setErrorListener(errorListener);
         final Source xmlSource;
-        if (xml instanceof String)
+        if (xml instanceof Document)
+        {
+            xmlSource = new DOMSource((Node) xml);
+        }
+        else if (xml instanceof String)
         {
             final Document doc = stringToDocument((String) xml);
             logger.debug(documentToString(doc));
             xmlSource = new DOMSource(doc);
+/*            logger.debug("incoming XML: " + xml);
+            xmlSource = new StreamSource(new StringReader((String) xml));*/
         }
         else if (xml instanceof File)
         {
@@ -210,7 +231,7 @@ public class XMLUtil
             }
         }
         trans.transform(xmlSource, result);
-        return byteArray.toString();
+        return stringWriter.toString();
     }   // END xslTransformation()
 
     /**
@@ -364,16 +385,16 @@ public class XMLUtil
         final Transformer transformer;
         final DOMSource source;
         final StreamResult result;
-        final ByteArrayOutputStream outputStream;
+        final StringWriter writer;
 
-        outputStream = new ByteArrayOutputStream(BUFFER_CAPACITY);
+        writer = new StringWriter(BUFFER_CAPACITY);
         transformerFactory = TransformerFactory.newInstance();
         transformer = transformerFactory.newTransformer();
         source = new DOMSource(document);
-        result = new StreamResult(outputStream);
+        result = new StreamResult(writer);
         transformer.transform(source, result);
 
-        return outputStream.toString();
+        return writer.toString();
     }
 
     /**
