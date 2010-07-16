@@ -302,7 +302,8 @@ public class XMLUtil
         Calendar newCal = null;
         if (xsDate != null)
         {
-            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd");
             final Date date = dateFormat.parse(xsDate);
             newCal = Calendar.getInstance();
             newCal.setTime(date);
@@ -399,55 +400,111 @@ public class XMLUtil
 
     /**
      * Converts a map to XML, where parent is the parent element, and every
-     * other element is of the form <key>value</key>.
+     * other element is of the form <key>value</key> or <listElementName>listvalue</listElementName>
+     * for each list index.  The list elements MUST be Strings if they are to
+     * have text nodes.  But, they may also be another Map with key/value
+     * pairs.
      * <p/>
-     * We assume that every key is an actual XML compatible element name.  The
-     * values will be XML encoded automatically.
+     * We assume that every key is an actual XML compatible element name; i.e. a
+     * String object.  The values will be XML encoded automatically.
      *
-     * @param parameters    the map to process
-     * @param parentElement the parent element to append the new child to
-     * @param document      the XML document to create new elements in
+     * @param elements        the elements, whether a list of elements or a map
+     *                        of key/value pairs
+     * @param parentElement   the parent element to append the new child to
+     * @param document        the XML document to create new elements in
+     * @param listElementName the name for the element, for every element in the
+     *                        List
      *
      * @throws ParserConfigurationException if a configuration error occurs
      */
     public static void mapToNode(
-        final Map parameters, final Element parentElement,
-        final Document document)
+        final Object elements, final Element parentElement,
+        final Document document, final String listElementName)
         throws ParserConfigurationException
     {
-        final Iterator it = parameters.keySet().iterator();
-        Element tmp;
-
-        while (it.hasNext())
+        Object value;
+        if (elements instanceof Map)
         {
-            final String key = (String) it.next();
-            final Object value;
+            final Map map = (Map) elements;
+            final Iterator it = map.keySet().iterator();
+            Element tmp;
 
-            value = parameters.get(key);
-            if (value instanceof Map)
+            while (it.hasNext())
             {
-                tmp = document.createElement(key);
-                mapToNode((Map) value, tmp, document);
-                parentElement.appendChild(tmp);
-            }
-            else
-            {
-                tmp = document.createElement(key);
-                if (value != null)
-                {   // null elements don't get in
-                    tmp.appendChild(document.createTextNode((String) value));
+                final String key = (String) it.next();
+
+                value = map.get(key);
+                if (value instanceof Map)
+                {
+                    tmp = document.createElement(key);
+                    mapToNode(value, tmp, document, null);
                     parentElement.appendChild(tmp);
                 }
+                else if (value instanceof List)
+                {
+                    mapToNode(value, parentElement, document, key);
+                }
+                else
+                {
+                    tmp = document.createElement(key);
+                    if (value != null)
+                    {   // null elements don't get in
+                        tmp.appendChild(document.createTextNode(
+                            (String) value));
+                        parentElement.appendChild(tmp);
+                    }
+                }
             }
+        }
+        else if (elements instanceof List)
+        {
+            if (listElementName == null || "".equals(listElementName.trim()))
+            {
+                throw new IllegalArgumentException(
+                    "listElementName can never be null if a list is passed " +
+                        "in for elements");
+            }
+            final List list = (List) elements;
+            for (int index = 0; index < list.size(); index++)
+            {
+                final Object element = list.get(index);
+                if (element instanceof String)
+                {   // text node
+                    final String text = (String) list.get(index);
+                    final Element tmp = document.createElement(listElementName);
+                    tmp.appendChild(document.createTextNode(text));
+                    parentElement.appendChild(tmp);
+                }
+                else if (element instanceof Map)
+                {   // sub elements that have key/value pairs, or key/List pairs
+                    final Element tmp = document.createElement(listElementName);
+                    parentElement.appendChild(tmp);
+                    mapToNode(element, tmp, document, null);
+                }
+                else if (element instanceof List)
+                {
+                    throw new IllegalArgumentException("List not supported " +
+                        "inside of List, cannot determine element name");
+                }
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("unsupported class type for " +
+                "mapToXML");
         }
     }
 
     /**
      * Converts a Map's keys and values to an XML document where the keys are
      * the elments, and the values are the textnodes (where value is String) or
-     * subelements (where value is Map)
+     * subelements (where value is Map).  In the case of a map entry with a List
+     * as the value, it will create multiple elements, named by the key, and the
+     * values will be the contents of the list, in list order.  Note: use a
+     * sorted list if you care about order.
      * <p/>
-     * The following code, will produce the XML below it.
+     * The following code, will produce the XML below it.  For more examples,
+     * you may look at the unit tests for MapTest
      * <pre>
      * final Map parameters;
      * final Map subElements;
@@ -484,7 +541,8 @@ public class XMLUtil
      * </pre>
      *
      * @param rootElementName the name that you want the root element to have
-     * @param parameters      the parameters to become the XML document
+     * @param elements        the elements, whether a list of elements or a map
+     *                        of key/value pairs
      *
      * @return the string representation of the XML document
      *
@@ -494,7 +552,7 @@ public class XMLUtil
      *                                      occurs
      */
     public static String mapToXML(final String rootElementName,
-        final Map parameters)
+        final Object elements)
         throws TransformerException, ParserConfigurationException
     {
         final Document mapDoc;
@@ -504,7 +562,7 @@ public class XMLUtil
         parent = mapDoc.createElement(rootElementName);
         mapDoc.appendChild(parent);
 
-        mapToNode(parameters, parent, mapDoc);
+        mapToNode(elements, parent, mapDoc, null);
         return documentToString(mapDoc);
     }
 }
