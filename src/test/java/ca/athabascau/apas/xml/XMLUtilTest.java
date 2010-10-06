@@ -7,6 +7,7 @@ import org.w3c.dom.Document;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * Created by IntelliJ IDEA.
@@ -102,5 +103,31 @@ public class XMLUtilTest extends TestCase
             logger.error("testXmlStylesheet failed", e);
             fail(e.getMessage());
         }
+    }
+
+    public void testXsDateTimeToCalendar() throws ParseException
+    {
+        Calendar xsDateTime = XMLUtil.xsDateTimeToCalendar(
+            "2010-10-05T18:14:14-0600");
+        assertEquals("year", 2010, xsDateTime.get(Calendar.YEAR));
+        assertEquals("month", 10, xsDateTime.get(Calendar.MONTH) + 1);
+        assertEquals("day", 05, xsDateTime.get(Calendar.DAY_OF_MONTH));
+        assertEquals("hour", 18, xsDateTime.get(Calendar.HOUR_OF_DAY));
+        assertEquals("minute", 14, xsDateTime.get(Calendar.MINUTE));
+        assertEquals("second", 14, xsDateTime.get(Calendar.SECOND));
+        assertEquals("timezone offset", -6, TimeZone.getDefault().getOffset(
+            xsDateTime.getTime().getTime()) / (1000 * 60 * 60));
+
+        // verify timezone correction to Canada/Mountain
+        xsDateTime = XMLUtil.xsDateTimeToCalendar(
+            "2010-12-05T18:14:14-0600");
+        assertEquals("year", 2010, xsDateTime.get(Calendar.YEAR));
+        assertEquals("month", 12, xsDateTime.get(Calendar.MONTH) + 1);
+        assertEquals("day", 05, xsDateTime.get(Calendar.DAY_OF_MONTH));
+        assertEquals("hour", 17, xsDateTime.get(Calendar.HOUR_OF_DAY));
+        assertEquals("minute", 14, xsDateTime.get(Calendar.MINUTE));
+        assertEquals("second", 14, xsDateTime.get(Calendar.SECOND));
+        assertEquals("timezone offset", -7, TimeZone.getDefault().getOffset(
+            xsDateTime.getTime().getTime()) / (1000 * 60 * 60));
     }
 }

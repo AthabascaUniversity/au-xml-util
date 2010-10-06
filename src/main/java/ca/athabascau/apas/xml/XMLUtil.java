@@ -312,6 +312,34 @@ public class XMLUtil
     }
 
     /**
+     * Converts an XML xs:datetime string to a Calendar object.  We do not mess
+     * around with formatting issues.  It either works, or it doesn't.
+     *
+     * @param xsDateTime the xs:datetime formatted string
+     *
+     * @return the Calendar object
+     *
+     * @throws ParseException if a parsing error occurs
+     */
+    public static Calendar xsDateTimeToCalendar(final String xsDateTime) throws
+        ParseException
+    {
+        Calendar newCal = null;
+        if (xsDateTime != null)
+        {
+            // -06:00 goes to -0600
+            final String fixedTime = xsDateTime.replaceAll(
+                "(\\-\\+\\d{2}):??(\\d{2})", "$1$2");
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ssZ");
+            final Date date = dateFormat.parse(fixedTime);
+            newCal = GregorianCalendar.getInstance();
+            newCal.setTime(date);
+        }
+        return newCal;
+    }
+
+    /**
      * Formats a date in the xml xs:dateTime format, for mountain time.  This
      * method does not support any other timezone.
      *
