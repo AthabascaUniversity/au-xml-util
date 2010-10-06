@@ -108,7 +108,7 @@ public class XMLUtilTest extends TestCase
     public void testXsDateTimeToCalendar() throws ParseException
     {
         Calendar xsDateTime = XMLUtil.xsDateTimeToCalendar(
-            "2010-10-05T18:14:14-0600");
+            "2010-10-05T18:14:14-06:00");
         assertEquals("year", 2010, xsDateTime.get(Calendar.YEAR));
         assertEquals("month", 10, xsDateTime.get(Calendar.MONTH) + 1);
         assertEquals("day", 05, xsDateTime.get(Calendar.DAY_OF_MONTH));
@@ -120,7 +120,7 @@ public class XMLUtilTest extends TestCase
 
         // verify timezone correction to Canada/Mountain
         xsDateTime = XMLUtil.xsDateTimeToCalendar(
-            "2010-12-05T18:14:14-0600");
+            "2010-12-05T18:14:14-06:00");
         assertEquals("year", 2010, xsDateTime.get(Calendar.YEAR));
         assertEquals("month", 12, xsDateTime.get(Calendar.MONTH) + 1);
         assertEquals("day", 05, xsDateTime.get(Calendar.DAY_OF_MONTH));

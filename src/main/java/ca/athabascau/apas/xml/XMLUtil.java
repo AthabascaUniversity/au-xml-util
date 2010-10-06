@@ -329,7 +329,7 @@ public class XMLUtil
         {
             // -06:00 goes to -0600
             final String fixedTime = xsDateTime.replaceAll(
-                "(\\-\\+\\d{2}):??(\\d{2})", "$1$2");
+                "([-+]??\\d{2}):??(\\d{2})$", "$1$2");
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ssZ");
             final Date date = dateFormat.parse(fixedTime);
