@@ -3,7 +3,7 @@
   <groupId>ca.athabascau.apas.xml</groupId>
   <artifactId>xml-util</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.3.2</version>
+  <version>0.1.3.3-SNAPSHOT</version>
   <name>xml-util</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -85,7 +85,7 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.3.2</connection>
-    <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/tags/xml-util-0.1.3.2</developerConnection>
+    <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/trunk</developerConnection>
   </scm>
 </project>
