@@ -401,13 +401,12 @@ public class XMLUtil
      * Converts the given document to string format by passing it through a
      * transformer.
      *
-     * @param document the DOM document to process
      *
-     * @return the XML string result
+     * @param node@return the XML string result
      *
      * @throws TransformerException if a transformation error occurs
      */
-    public static String documentToString(final Document document)
+    public static String documentToString(final Node node)
         throws TransformerException
     {
         final TransformerFactory transformerFactory;
@@ -419,7 +418,7 @@ public class XMLUtil
         writer = new StringWriter(BUFFER_CAPACITY);
         transformerFactory = TransformerFactory.newInstance();
         transformer = transformerFactory.newTransformer();
-        source = new DOMSource(document);
+        source = new DOMSource(node);
         result = new StreamResult(writer);
         transformer.transform(source, result);
 
