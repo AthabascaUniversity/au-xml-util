@@ -24,7 +24,7 @@ See the COPYING file for more information.
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.trentonadams</groupId>
   <artifactId>au-xml-util</artifactId>
-  <version>0.1.6-SNAPSHOT</version>
+  <version>0.1.6</version>
   <packaging>jar</packaging>
   <name>au-xml-util</name>
   <url>http://maven.apache.org</url>
