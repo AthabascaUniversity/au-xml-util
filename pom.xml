@@ -1,11 +1,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>ca.athabascau.apas.xml</groupId>
-  <artifactId>xml-util</artifactId>
-  <packaging>jar</packaging>
+  <groupId>com.github.trentonadams</groupId>
+  <artifactId>au-xml-util</artifactId>
   <version>0.1.6-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>xml-util</name>
   <url>http://maven.apache.org</url>
+
+  <scm>
+    <connection>scm:git:git://github.com/TrentonAdams/au-xml-util.git</connection>
+    <developerConnection>
+      scm:git:ssh://git@github.com/TrentonAdams/au-xml-util.git
+    </developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Trenton D. Adams</name>
+      <email>trent.gpg@trentonadams.ca</email>
+      <id>trent</id>
+    </developer>
+  </developers>
+
+  <distributionManagement>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>sonatype nexus staging</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>sonatype nexus snapshot</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -66,26 +95,76 @@
     </plugins>
   </build>
 
-  <properties>
-    <webunit-cvs.user.name>${user.name}</webunit-cvs.user.name>
-  </properties>
- 
- <distributionManagement>
-    <!-- AU Repository Distribution -->
-    <repository>
-      <id>athabascau-repository</id>
-      <name>AU Repository</name>
-      <url>scpexe://maven.cs.athabascau.ca/var/lib/maven</url>
-    </repository>
-    <snapshotRepository>
-      <id>athabascau-repository-snap</id>
-      <name>AU Repository</name>
-      <url>scpexe://reuben.pc.athabascau.ca/var/lib/maven</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <profiles>
+    <profile>
+      <id>test</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <maven.test.skip>false</maven.test.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.5</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
-  <scm>
-    <connection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://webunit-cvs.athabascau.ca/home/svn/waas-unit/apas/xml-util/trunk</developerConnection>
-  </scm>
+    <profile>
+      <id>dtest</id>
+      <properties>
+        <maven.test.skip>false</maven.test.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+              <forkMode>once</forkMode>
+              <debugForkedProcess>true</debugForkedProcess>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
