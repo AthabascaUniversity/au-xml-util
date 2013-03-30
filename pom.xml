@@ -4,7 +4,7 @@
   <artifactId>au-xml-util</artifactId>
   <version>0.1.6-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>xml-util</name>
+  <name>au-xml-util</name>
   <url>http://maven.apache.org</url>
 
   <scm>
