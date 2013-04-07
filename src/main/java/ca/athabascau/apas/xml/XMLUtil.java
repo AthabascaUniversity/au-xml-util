@@ -421,8 +421,9 @@ public class XMLUtil
      * Converts the given document to string format by passing it through a
      * transformer.
      *
+     * @param node the node to convert to a java string.
      *
-     * @param node@return the XML string result
+     * @return the XML string result
      *
      * @throws TransformerException if a transformation error occurs
      */
