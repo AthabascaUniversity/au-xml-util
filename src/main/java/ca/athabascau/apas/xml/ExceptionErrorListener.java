@@ -1,7 +1,6 @@
 /**
- * This file is part of the au-xml-util package; aka Athabasca University log4j
- * addons.
- * 
+ * This file is part of the au-xml-util package
+ *
  * Copyright Trenton D. Adams <trenton daught d daught adams at gmail daught ca>
  * 
  * au-xml-util is free software: you can redistribute it and/or modify it under

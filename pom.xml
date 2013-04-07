@@ -1,25 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-This file is part of the au-xml-util package; aka Athabasca University log4j
-addons.
-
-Copyright Trenton D. Adams &lt;trenton daught d daught adams at gmail daught ca&gt;
-
-au-xml-util is free software: you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the
-Free Software Foundation, either version 3 of the License, or (at your
-option) any later version.
-
-au-xml-util is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-License for more details.
-
-You should have received a copy of the GNU Lesser General Public 
-License along with au-xml-util.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
-
-See the COPYING file for more information.
-  -->
+<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.trentonadams</groupId>
@@ -29,13 +8,6 @@ See the COPYING file for more information.
   <name>au-xml-util</name>
   <url>http://maven.apache.org</url>
 
-  <scm>
-    <connection>scm:git:git://github.com/TrentonAdams/au-xml-util.git</connection>
-    <developerConnection>
-      scm:git:ssh://git@github.com/TrentonAdams/au-xml-util.git
-    </developerConnection>
-  </scm>
-
   <developers>
     <developer>
       <name>Trenton D. Adams</name>
@@ -43,6 +15,13 @@ See the COPYING file for more information.
       <id>trent</id>
     </developer>
   </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/AthabascaUniversity/au-xml-util.git</connection>
+    <developerConnection>
+      scm:git:ssh://git@github.com/AthabascaUniversity/au-xml-util.git
+    </developerConnection>
+  </scm>
 
   <distributionManagement>
     <repository>
@@ -188,5 +167,4 @@ See the COPYING file for more information.
       </build>
     </profile>
   </profiles>
-
 </project>
